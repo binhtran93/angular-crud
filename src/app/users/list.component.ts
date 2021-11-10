@@ -2,26 +2,29 @@
 import { first } from 'rxjs/operators';
 
 import { UserService } from '@app/_services';
-import { User } from '@app/_models';
+import { Product } from '@app/_models';
 
 @Component({ templateUrl: 'list.component.html' })
 export class ListComponent implements OnInit {
-    users!: User[];
+    products!: Product[];
 
     constructor(private userService: UserService) {}
 
     ngOnInit() {
         this.userService.getAll()
             .pipe(first())
-            .subscribe(users => this.users = users);
+            .subscribe(users => {
+              console.log(users);
+              this.products = users;
+            });
     }
 
     deleteUser(id: string) {
-        const user = this.users.find(x => x.id === id);
+        const user = this.products.find(x => x.id === id);
         if (!user) return;
         user.isDeleting = true;
         this.userService.delete(id)
             .pipe(first())
-            .subscribe(() => this.users = this.users.filter(x => x.id !== id));
+            .subscribe(() => this.products = this.products.filter(x => x.id !== id));
     }
 }

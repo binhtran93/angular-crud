@@ -2,7 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from '@environments/environment';
-import { User } from '@app/_models';
+import { Product } from '@app/_models';
 
 const baseUrl = `${environment.apiUrl}/users`;
 
@@ -11,11 +11,12 @@ export class UserService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<User[]>(baseUrl);
+      console.log(baseUrl)
+        return this.http.get<Product[]>(baseUrl);
     }
 
     getById(id: string) {
-        return this.http.get<User>(`${baseUrl}/${id}`);
+        return this.http.get<Product>(`${baseUrl}/${id}`);
     }
 
     create(params: any) {

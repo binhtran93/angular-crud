@@ -8,14 +8,10 @@ import { Role } from '@app/_models';
 // array in local storage for registered users
 const usersKey = 'angular-11-crud-example-users';
 const usersJSON = localStorage.getItem(usersKey);
-let users: any[] = usersJSON ? JSON.parse(usersJSON) : [{
+let products: any[] = usersJSON ? JSON.parse(usersJSON) : [{
     id: 1,
-    title: 'Mr',
-    firstName: 'Joe',
-    lastName: 'Bloggs',
-    email: 'joe@bloggs.com',
-    role: Role.User,
-    password: 'joe123'
+    name: 'Product One',
+    price: 12,
 }];
 
 @Injectable()
@@ -40,41 +36,37 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 default:
                     // pass through any requests not handled above
                     return next.handle(request);
-            }    
+            }
         }
 
         // route functions
 
         function getUsers() {
-            return ok(users.map(x => basicDetails(x)));
+          console.log(products)
+            return ok(products.map(x => basicDetails(x)));
         }
 
         function getUserById() {
-            const user = users.find(x => x.id === idFromUrl());
+            const user = products.find(x => x.id === idFromUrl());
             return ok(basicDetails(user));
         }
 
         function createUser() {
             const user = body;
 
-            if (users.find(x => x.email === user.email)) {
-                return error(`User with the email ${user.email} already exists`);
-            }
-
             // assign user id and a few other properties then save
             user.id = newUserId();
-            delete user.confirmPassword;
-            users.push(user);
-            localStorage.setItem(usersKey, JSON.stringify(users));
+            products.push(user);
+            localStorage.setItem(usersKey, JSON.stringify(products));
 
             return ok();
         }
 
         function updateUser() {
             let params = body;
-            let user = users.find(x => x.id === idFromUrl());
+            let user = products.find(x => x.id === idFromUrl());
 
-            if (params.email !== user.email && users.find(x => x.email === params.email)) {
+            if (params.email !== user.email && products.find(x => x.email === params.email)) {
                 return error(`User with the email ${params.email} already exists`);
             }
 
@@ -85,14 +77,14 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
             // update and save user
             Object.assign(user, params);
-            localStorage.setItem(usersKey, JSON.stringify(users));
+            localStorage.setItem(usersKey, JSON.stringify(products));
 
             return ok();
         }
 
         function deleteUser() {
-            users = users.filter(x => x.id !== idFromUrl());
-            localStorage.setItem(usersKey, JSON.stringify(users));
+            products = products.filter(x => x.id !== idFromUrl());
+            localStorage.setItem(usersKey, JSON.stringify(products));
             return ok();
         }
 
@@ -109,8 +101,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         }
 
         function basicDetails(user: any) {
-            const { id, title, firstName, lastName, email, role } = user;
-            return { id, title, firstName, lastName, email, role };
+            const { id, name, price } = user;
+            return { id, name, price };
         }
 
         function idFromUrl() {
@@ -119,7 +111,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         }
 
         function newUserId() {
-            return users.length ? Math.max(...users.map(x => x.id)) + 1 : 1;
+            return products.length ? Math.max(...products.map(x => x.id)) + 1 : 1;
         }
     }
 }
