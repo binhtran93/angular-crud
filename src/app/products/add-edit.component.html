@@ -14,6 +14,7 @@
         <input type="text" formControlName="price" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.price.errors }" />
         <div *ngIf="submitted && f.price.errors" class="invalid-feedback">
           <div *ngIf="f.price.errors.required">Price is required</div>
+          <div *ngIf="f.price.errors.pattern">Price must be a number</div>
         </div>
       </div>
     </div>

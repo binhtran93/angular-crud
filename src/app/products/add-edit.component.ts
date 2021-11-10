@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AbstractControlOptions, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
-import { UserService, AlertService } from '@app/_services';
+import { ProductService, AlertService } from '@app/_services';
 import { MustMatch } from '@app/_helpers';
 
 @Component({ templateUrl: 'add-edit.component.html' })
@@ -18,7 +18,7 @@ export class AddEditComponent implements OnInit {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private userService: UserService,
+        private userService: ProductService,
         private alertService: AlertService
     ) {}
 
@@ -28,7 +28,7 @@ export class AddEditComponent implements OnInit {
 
         this.form = this.formBuilder.group({
             name: ['', Validators.required],
-            price: ['', Validators.required],
+            price: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
         });
 
         if (!this.isAddMode) {

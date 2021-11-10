@@ -7,7 +7,7 @@ import { Product } from '@app/_models';
 const baseUrl = `${environment.apiUrl}/users`;
 
 @Injectable({ providedIn: 'root' })
-export class UserService {
+export class ProductService {
     constructor(private http: HttpClient) { }
 
     getAll() {

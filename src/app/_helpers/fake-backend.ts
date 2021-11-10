@@ -6,9 +6,9 @@ import { delay, materialize, dematerialize } from 'rxjs/operators';
 import { Role } from '@app/_models';
 
 // array in local storage for registered users
-const usersKey = 'angular-11-crud-example-users';
-const usersJSON = localStorage.getItem(usersKey);
-let products: any[] = usersJSON ? JSON.parse(usersJSON) : [{
+const productsKey = 'angular-11-crud-example-users';
+const productsJSON = localStorage.getItem(productsKey);
+let products: any[] = productsJSON ? JSON.parse(productsJSON) : [{
     id: 1,
     name: 'Product One',
     price: 12,
@@ -24,15 +24,15 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         function handleRoute() {
             switch (true) {
                 case url.endsWith('/users') && method === 'GET':
-                    return getUsers();
+                    return getProducts();
                 case url.match(/\/users\/\d+$/) && method === 'GET':
-                    return getUserById();
+                    return getProductById();
                 case url.endsWith('/users') && method === 'POST':
-                    return createUser();
+                    return createProduct();
                 case url.match(/\/users\/\d+$/) && method === 'PUT':
-                    return updateUser();
+                    return updateProduct();
                 case url.match(/\/users\/\d+$/) && method === 'DELETE':
-                    return deleteUser();
+                    return deleteProduct();
                 default:
                     // pass through any requests not handled above
                     return next.handle(request);
@@ -41,50 +41,41 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         // route functions
 
-        function getUsers() {
+        function getProducts() {
           console.log(products)
             return ok(products.map(x => basicDetails(x)));
         }
 
-        function getUserById() {
+        function getProductById() {
             const user = products.find(x => x.id === idFromUrl());
             return ok(basicDetails(user));
         }
 
-        function createUser() {
+        function createProduct() {
             const user = body;
 
             // assign user id and a few other properties then save
             user.id = newUserId();
             products.push(user);
-            localStorage.setItem(usersKey, JSON.stringify(products));
+            localStorage.setItem(productsKey, JSON.stringify(products));
 
             return ok();
         }
 
-        function updateUser() {
+        function updateProduct() {
             let params = body;
-            let user = products.find(x => x.id === idFromUrl());
-
-            if (params.email !== user.email && products.find(x => x.email === params.email)) {
-                return error(`User with the email ${params.email} already exists`);
-            }
-
-            // only update password if entered
-            if (!params.password) {
-                delete params.password;
-            }
+            let product = products.find(x => x.id === idFromUrl());
 
             // update and save user
-            Object.assign(user, params);
-            localStorage.setItem(usersKey, JSON.stringify(products));
+            Object.assign(product, params);
+            localStorage.setItem(productsKey, JSON.stringify(products));
 
             return ok();
         }
 
-        function deleteUser() {
+        function deleteProduct() {
             products = products.filter(x => x.id !== idFromUrl());
-            localStorage.setItem(usersKey, JSON.stringify(products));
+            localStorage.setItem(productsKey, JSON.stringify(products));
             return ok();
         }
 

@@ -1,10 +1,10 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 
-const usersModule = () => import('./users/users.module').then(x => x.UsersModule);
+const productsModule = () => import('./products/products.module').then(x => x.ProductsModule);
 
 const routes: Routes = [
-    { path: '', loadChildren: usersModule },
+    { path: '', loadChildren: productsModule },
 
     // otherwise redirect to home
     { path: '**', redirectTo: '' }
